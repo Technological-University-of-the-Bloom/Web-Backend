@@ -12,8 +12,8 @@ export class BlogsService {
     @InjectConnection() private connection: Connection,
   ) {}
 
-  findAll(): string {
-    return 's';
+  findAll(): Promise<Blog[]> {
+    return this.blogModel.find().exec();
   }
 
   findOne(): string {

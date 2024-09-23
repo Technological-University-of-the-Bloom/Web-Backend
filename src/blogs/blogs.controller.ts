@@ -17,7 +17,7 @@ export class BlogsController {
 
   @Get()
   findAll() {
-    return 'get all blogs';
+    return this.blogService.findAll();
   }
 
   @Get(':id') //localhost:3000/blogs/id
