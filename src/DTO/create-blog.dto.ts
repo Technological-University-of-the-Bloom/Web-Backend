@@ -14,7 +14,7 @@ export class CreateBlogDto {
   autor: string;
 
   @IsString()
-  cuerpo: string;
+  cuerpo?: string;
 
   @IsString()
   imagen: string;

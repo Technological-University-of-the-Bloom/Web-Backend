@@ -35,8 +35,18 @@ export class BlogsController {
   }
 
   @Put('update/:id') //localhost:3000/blogs/update/:id
-  updateBlog(@Param('id') id: string): string {
-    return `Blog with id ${id} updated successfully.`;
+  async updateBlog(
+    @Param('id') id: string,
+    @Body() updateBlogDto: CreateBlogDto, // Cambia a UpdateBlogDto
+  ): Promise<Blog> {
+    const cleanedId = id.trim(); // Limpiar el id
+    const updatedBlog = await this.blogService.updateBlog(cleanedId, updateBlogDto);
+    
+    if (!updatedBlog) {
+      throw new Error(`Blog with id ${cleanedId} not found.`);
+    }
+    
+    return updatedBlog;
   }
 
   @Delete('delete/:id') //localhost:3000/blogs/delete/:id

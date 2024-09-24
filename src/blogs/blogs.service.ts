@@ -27,4 +27,14 @@ export class BlogsService {
   async deletePost(id: string | Types.ObjectId): Promise<Blog | null> {
     return this.blogModel.findByIdAndDelete(id).exec();
   }
+  async updateBlog(
+    id: string | Types.ObjectId, 
+    updateBlogDto: CreateBlogDto,
+  ): Promise<Blog | null> {
+    return this.blogModel.findByIdAndUpdate(id, updateBlogDto, {
+      new: true, // Retorna el documento actualizado
+      useFindAndModify: false, // Evita advertencias de Mongoose
+    }).exec();
+  }
+  
 }
