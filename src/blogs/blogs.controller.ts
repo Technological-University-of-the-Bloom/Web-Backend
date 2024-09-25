@@ -40,12 +40,15 @@ export class BlogsController {
     @Body() updateBlogDto: CreateBlogDto, // Cambia a UpdateBlogDto
   ): Promise<Blog> {
     const cleanedId = id.trim(); // Limpiar el id
-    const updatedBlog = await this.blogService.updateBlog(cleanedId, updateBlogDto);
-    
+    const updatedBlog = await this.blogService.updateBlog(
+      cleanedId,
+      updateBlogDto,
+    );
+
     if (!updatedBlog) {
       throw new Error(`Blog with id ${cleanedId} not found.`);
     }
-    
+
     return updatedBlog;
   }
 
@@ -58,5 +61,4 @@ export class BlogsController {
     }
     return `Blog with id ${cleanedId} deleted successfully.`;
   }
-  
 }

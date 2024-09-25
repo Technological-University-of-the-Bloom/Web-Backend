@@ -18,7 +18,7 @@ export class BlogsService {
 
   async findOne(id: string | Types.ObjectId): Promise<Blog> {
     return this.blogModel.findById(id).exec();
-  } 
+  }
   async createBlog(createBlogDto: CreateBlogDto): Promise<Blog> {
     const createdBlog = new this.blogModel(createBlogDto);
     console.log(`created new blog:  ${createdBlog}`);
@@ -28,13 +28,14 @@ export class BlogsService {
     return this.blogModel.findByIdAndDelete(id).exec();
   }
   async updateBlog(
-    id: string | Types.ObjectId, 
+    id: string | Types.ObjectId,
     updateBlogDto: CreateBlogDto,
   ): Promise<Blog | null> {
-    return this.blogModel.findByIdAndUpdate(id, updateBlogDto, {
-      new: true, // Retorna el documento actualizado
-      useFindAndModify: false, // Evita advertencias de Mongoose
-    }).exec();
+    return this.blogModel
+      .findByIdAndUpdate(id, updateBlogDto, {
+        new: true, // Retorna el documento actualizado
+        useFindAndModify: false, // Evita advertencias de Mongoose
+      })
+      .exec();
   }
-  
 }
