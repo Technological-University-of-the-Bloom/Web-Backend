@@ -1,6 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { StudentService } from './student.service';
-import { StudentProfileDto } from 'src/dto/student-profile.dto';
+import { StudentProfileDto } from 'src/DTO/student-profile.dto';
 
 @Controller('students')
 export class StudentController {
