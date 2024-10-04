@@ -1,5 +1,5 @@
 
-Welcome to the UTR Website Redesign project! We’re on a mission to transform our university’s webpage into a modern, visually stunning hub of information. Using **Mongo**, **Node.js** **Nest.js** and **Docker**, we’re creating an experience that’s not just functional but also fun!
+Welcome to the UTR Website Redesign project! This repository contains the backend of a webpage built with NestJS, Node.js, and MongoDB, containerized using Docker. The backend provides RESTful API endpoints and handles the business logic, database management, and integrations with third-party services.
 
 ## Table of Contents
 - [Features](#features)
@@ -7,14 +7,27 @@ Welcome to the UTR Website Redesign project! We’re on a mission to transform o
 - [Installation](#installation)
 - [Environment Setup](#environment-setup)
 - [Running the Project](#running-the-project)
+- [Docker Setup](#docker-setup)
 - [API Endpoints](#api-endpoints)
 - [Contributing](#contributing)
 - [License](#license)
 - [Contact](#contact)
 
-## Description
+## Features
+RESTful API built using NestJS.
+MongoDB integration for database management.
+Authentication with JWT (JSON Web Tokens).
+Full Docker support for easy deployment.
+Environment-based configurations (development, production).
+Error handling and validation.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Technologies
+Node.js: JavaScript runtime environment.
+NestJS: A progressive Node.js framework for building efficient, reliable, and scalable server-side applications.
+MongoDB: NoSQL database for storing data.
+Docker: Container platform for packaging the application and its dependencies.
+JWT: Authentication with JSON Web Tokens.
+Version Control: Git for version control.
 
 ## Project setup
 
