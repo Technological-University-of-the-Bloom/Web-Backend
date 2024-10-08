@@ -1,5 +1,5 @@
 
-![BANNER](https://github.com/Technological-University-of-the-Bloom/Web-Backend/blob/main/banner.png?raw=true)
+![BANNER](https://github.com/Technological-University-of-the-Bloom/Web-Backend/blob/master/banner.png?raw=true)
 ---
 <div align="center">
 <img src="https://nestjs.com/img/logo-small.svg" alt="nest" height="150"/>
