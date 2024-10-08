@@ -1,88 +1,219 @@
 
-Welcome to the UTR Website Redesign project! This repository contains the backend of a webpage built with NestJS, Node.js, and MongoDB, containerized using Docker. The backend provides RESTful API endpoints and handles the business logic, database management, and integrations with third-party services.
+![BANNER](https://github.com/Technological-University-of-the-Bloom/Web-Backend/blob/main/banner.png?raw=true)
+---
+<div align="center">
+<img src="https://nestjs.com/img/logo-small.svg" alt="nest" height="150"/>
+<img src="https://www.docker.com/wp-content/uploads/2022/03/Moby-logo.png" alt="docker" height="150"/> 
+<img src="https://nodejs.org/static/logos/jsIconGreen.svg" alt="docker" height="150"/> 
+</div>
+<div align="center">
+<img src="https://upload.wikimedia.org/wikipedia/commons/9/93/MongoDB_Logo.svg" alt="nest" width="400"/>
+</div>
+
+
+> **Frontend**: [UTR Webpage Repo](https://astro.build/)  
+
+---
 
 ## Table of Contents
-- [Features](#features)
-- [Technologies](#technologies)
-- [Installation](#installation)
-- [Environment Setup](#environment-setup)
-- [Running the Project](#running-the-project)
-- [Docker Setup](#docker-setup)
-- [API Endpoints](#api-endpoints)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
 
-## Features
-RESTful API built using NestJS.
-MongoDB integration for database management.
-Authentication with JWT (JSON Web Tokens).
-Full Docker support for easy deployment.
-Environment-based configurations (development, production).
-Error handling and validation.
+- [🚀 Project Overview](#-project-overview)
+- [📦 Tech Stack](#-tech-stack)
+- [🔧 Getting Started](#-getting-started)
+- [📁 Project Structure](#-project-structure)
+- [🚦 Running the Backend](#-running-the-backend)
+- [🔌 Microservices](#-microservices)
+- [⚙️ Configuration](#%EF%B8%8F-configuration)
+- [🛠️ Useful Commands](#%EF%B8%8F-useful-commands)
+- [📡 API Endpoints](#-api-endpoints)
+- [🐞 Troubleshooting](#-troubleshooting)
+- [🤝 Contributing](#-contributing)
 
-## Technologies
-Node.js: JavaScript runtime environment.
-NestJS: A progressive Node.js framework for building efficient, reliable, and scalable server-side applications.
-MongoDB: NoSQL database for storing data.
-Docker: Container platform for packaging the application and its dependencies.
-JWT: Authentication with JSON Web Tokens.
-Version Control: Git for version control.
+---
 
-## Project setup
+## 🚀 Project Overview
+
+This backend powers a web application that brings all university services under one roof. 🎓 From managing student IDs to hosting a blog and image library, our NestJS-powered backend has everything you need for an efficient, scalable solution!
+
+> 🛠️ **Built with microservices** for modularity and scalability!  
+> 🌐 **Server-side rendering** for optimized performance!  
+> 🔐 **OAuth authentication** for secure login!  
+> 📈 **Real-time notifications** and **user activity tracking**!
+
+---
+
+## 📦 Tech Stack
+
+- **NestJS**: For building the scalable and modular backend architecture
+- **TypeScript**: Writing safer and cleaner code
+- **Docker**: Containerizing the app for easy deployment
+- **MongoDB**: Document based database
+- **OAuth**: Secure authentication
+
+---
+
+## 🔧 Getting Started
+
+### Prerequisites
+
+To get started, ensure you have the following installed:
+
+- [Node.js](https://nodejs.org/) (v18+)
+- [Docker](https://www.docker.com/)
+- [MongoDB](https://www.mongodb.com&)
+- [Redis](https://redis.io/)
+
+### Installation Steps
+
+1. **Clone the repo**:
+
+   ```bash
+   git clone https://github.com/yourusername/centralized-services-backend.git
+   ```
+
+2. **Navigate to the project directory**:
+
+   ```bash
+   cd Web-Backend
+   ```
+
+3. **Install dependencies**:
+
+   ```bash
+   npm install
+   ```
+
+4. **Create environment variables**:
+
+   Copy the `.env.example` file and rename it to `.env`. Make sure to add your database credentials and other necessary secrets.
+
+   ```bash
+   cp .env.example .env
+   ```
+
+---
+
+## 📁 Project Structure
+### Breakdown:
+```
+`📦 project-root
+ ┣ 📂 src                   # Main source code directory
+ ┃ ┣ 📂 image-upload         # Module for image upload functionality
+ ┃ ┣ 📂 test                 # Unit and integration tests
+ ┣ 📂 uploads               # Directory where uploaded images are stored
+ ┣ 📜 .dockerignore          # Ignore file for Docker builds
+ ┣ 📜 .eslintrc.js           # ESLint configuration
+ ┣ 📜 .gitignore             # Git ignore file
+ ┣ 📜 .prettierrc            # Prettier configuration for code formatting
+ ┣ 📜 README.md              # Readme file for project documentation
+ ┣ 📜 docker-compose.yml     # Docker Compose configuration file
+ ┣ 📜 dockerfile             # Dockerfile for building the project image
+ ┣ 📜 nest-cli.json          # NestJS CLI configuration
+ ┣ 📜 package.json           # Project dependencies and scripts
+ ┣ 📜 pnpm-lock.yaml         # Lock file for package dependencies (PNPM)
+ ┣ 📜 tsconfig.build.json    # TypeScript configuration for build
+ ┣ 📜 tsconfig.json          # Base TypeScript configuration` 
+```
+---
+
+## 🚦 Running the Backend
+
+To run the backend locally:
 
 ```bash
-$ pnpm install
+docker-compose up --build
 ```
 
-## Compile and run the project
+This will spin up the NestJS app along with the PostgreSQL and Redis services!
+
+### 🧪 Running in Development Mode
 
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+npm run start:dev
 ```
 
-## Run tests
+> 💡 **Pro Tip**: Use `npm run start:debug` to enable live reloading and debugging while developing.
+
+---
+
+## 🔌 Microservices
+
+Our backend is composed of multiple **microservices** to make it modular and scalable. Here’s what we’ve got under the hood:
+
+- **Blog Microservice**: For creating and managing blog posts 📖.
+- **Student ID Microservice**: For student profile and ID management 🆔.
+- **Notifications Microservice**: Real-time notifications 🚨.
+- **Image Library Microservice**: Handles image uploads and storage 🖼️.
+- **Authentication Microservice**: OAuth authentication and user sessions 🔐.
+
+Each service runs independently but communicates through internal APIs. Neat, right? 😎
+
+---
+
+## ⚙️ Configuration
+
+Environment variables are managed using the `.env` file. Here are some important variables you’ll want to configure:
+
+```ini
+PORT=3000                # Backend server port
+DB_HOST=localhost         # Database host
+DB_PORT=5432              # Database port
+REDIS_HOST=localhost      # Redis host for caching
+REDIS_PORT=6379           # Redis port
+OAUTH_CLIENT_ID=xxxxxxxx  # OAuth client ID
+OAUTH_CLIENT_SECRET=xxxx  # OAuth client secret
+```
+
+---
+
+## 🛠️ Useful Commands
+
+### Start the app in development mode:
 
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+npm run start:dev
 ```
 
-## Resources
+### Run the app with Docker:
 
-Check out a few resources that may come in handy when working with NestJS:
+```bash
+docker-compose up
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Run tests:
 
-## Support
+```bash
+npm run test
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Build for production:
 
-## Stay in touch
+```bash
+npm run build
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
-## License
+## 🤝 Contributing
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+We love contributions! 🥳 If you want to help us improve the backend, here’s how you can contribute:
+
+1. **Fork the repo**
+2. **Create a feature branch** (`git checkout -b feature/new-feature`)
+3. **Commit your changes** (`git commit -m 'Add new feature'`)
+4. **Push to the branch** (`git push origin feature/new-feature`)
+5. **Open a Pull Request**
+
+## 📄 License
+
+This project is licensed under the MIT License. Check out the [LICENSE](LICENSE) file for more details.
+
+## 📬 Contact
+
+Have questions, suggestions, or just want to chat? Reach out to us!
+
+- **Project Manager: Daniel Téllez Girón** - [danieltellezgiron81@gmail.com]
+- **IT Department, Universidad Tecnológica el Retoño**
+
+---
+
+**Happy coding!** 🎉
