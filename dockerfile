@@ -10,11 +10,12 @@ COPY package*.json ./
  RUN npm install
  RUN npm i -g @nestjs/cli
  RUN npm install localtunnel
- 
+
 COPY . .
 
 RUN npm run build
 
 EXPOSE 3000
+EXPOSE 8000
 
-CMD ["npm", "start"]
+CMD ["lt", "--port", "8000"]
