@@ -14,6 +14,6 @@ services:
     depends_on:
       - mongo
     environment:
-      MONGO_URI: mongodb://localhost:27017/nest
+      MONGO_URI: mongodb://172.16.21.12:27017/nest
     links:
       - mongo

@@ -3,15 +3,18 @@ FROM node:20.17.0-alpine
 WORKDIR /app
 
 COPY package*.json ./
-COPY pnpm-lock.yaml ./
+#COPY pnpm-lock.yaml ./
 
-RUN npm install -g pnpm
-RUN pnpm install
-
+# RUN npm install -g pnpm
+ # RUN pnpm install
+ RUN npm install
+ RUN npm i -g @nestjs/cli
+ RUN npm install localtunnel
+ 
 COPY . .
 
-RUN pnpm run build
+RUN npm run build
 
 EXPOSE 3000
 
-CMD ["pnpm", "start:prod"]
+CMD ["npm", "start"]

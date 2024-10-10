@@ -4,12 +4,12 @@ import { ImageService } from './image.service';
 import { Response } from 'express';
 import { Multer } from 'multer';
 
-//localhost:3000/imagenStudent
+//172.16.21.12:3000/imagenStudent
 @Controller('imagenStudent')   // The base route for image operations
 export class ImageController { 
   constructor(private readonly imageService: ImageService) {}
 
-  @Post(':id')//localhost:3000/imagenStudent/id 1 2 3
+  @Post(':id')//172.16.21.12:3000/imagenStudent/id 1 2 3
   @UseInterceptors(FileInterceptor('file'))  // Intercepts the file upload
   async uploadImage(@Param('id') id: string, @UploadedFile() file: any) {
     try {

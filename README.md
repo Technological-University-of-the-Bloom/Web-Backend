@@ -156,9 +156,9 @@ Environment variables are managed using the `.env` file. Here are some important
 
 ```ini
 PORT=3000                # Backend server port
-DB_HOST=localhost         # Database host
+DB_HOST=172.16.21.12         # Database host
 DB_PORT=5432              # Database port
-REDIS_HOST=localhost      # Redis host for caching
+REDIS_HOST=172.16.21.12      # Redis host for caching
 REDIS_PORT=6379           # Redis port
 OAUTH_CLIENT_ID=xxxxxxxx  # OAuth client ID
 OAUTH_CLIENT_SECRET=xxxx  # OAuth client secret

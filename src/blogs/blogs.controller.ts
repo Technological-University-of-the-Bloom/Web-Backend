@@ -11,7 +11,7 @@ import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from 'src/DTO/create-blog.dto';
 import { Blog } from 'src/schemas/blogs.schema';
 
-@Controller('blogs') //localhost:3000/blogs
+@Controller('blogs') //172.16.21.12:3000/blogs
 export class BlogsController {
   constructor(private readonly blogService: BlogsService) {}
 
@@ -20,7 +20,7 @@ export class BlogsController {
     return this.blogService.findAll();
   }
 
-  @Get(':id') //localhost:3000/blogs/:id
+  @Get(':id') //172.16.21.12:3000/blogs/:id
   async findOne(@Param('id') id: string): Promise<Blog | null> {
     const blog = await this.blogService.findOne(id.trim());
     if (!blog) {
@@ -29,12 +29,12 @@ export class BlogsController {
     return blog;
   }
 
-  @Post('create') //localhost:3000/blogs/create
+  @Post('create') //172.16.21.12:3000/blogs/create
   async createBlog(@Body() createBlogDto: CreateBlogDto): Promise<Blog> {
     return this.blogService.createBlog(createBlogDto);
   }
 
-  @Put('update/:id') //localhost:3000/blogs/update/:id
+  @Put('update/:id') //172.16.21.12:3000/blogs/update/:id
   async updateBlog(
     @Param('id') id: string,
     @Body() updateBlogDto: CreateBlogDto, // Cambia a UpdateBlogDto
@@ -52,7 +52,7 @@ export class BlogsController {
     return updatedBlog;
   }
 
-  @Delete('delete/:id') //localhost:3000/blogs/delete/:id
+  @Delete('delete/:id') //172.16.21.12:3000/blogs/delete/:id
   async findByIdAndDelete(@Param('id') id: string): Promise<string> {
     const cleanedId = id.trim(); // Limpiar el id
     const result = await this.blogService.deletePost(cleanedId);
