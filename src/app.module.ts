@@ -9,7 +9,7 @@ import { StudentModule } from './student/student.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/nest'),
+    MongooseModule.forRoot('mongodb://172.16.21.12:27017/nest'),
     BlogsModule,
     NewsModule,
     StudentModule,

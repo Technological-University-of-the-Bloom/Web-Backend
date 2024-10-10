@@ -1,16 +1,26 @@
-import { Controller, Post, Get, Param, UploadedFile, UseInterceptors, Res, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Param,
+  UploadedFile,
+  UseInterceptors,
+  Res,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImageService } from './image.service';
 import { Response } from 'express';
-import { Multer } from 'multer';
+//import { Multer } from 'multer';
 
 //172.16.21.12:3000/imagenStudent
-@Controller('imagenStudent')   // The base route for image operations
-export class ImageController { 
+@Controller('imagenStudent') // The base route for image operations
+export class ImageController {
   constructor(private readonly imageService: ImageService) {}
 
-  @Post(':id')//172.16.21.12:3000/imagenStudent/id 1 2 3
-  @UseInterceptors(FileInterceptor('file'))  // Intercepts the file upload
+  @Post(':id') //172.16.21.12:3000/imagenStudent/id 1 2 3
+  @UseInterceptors(FileInterceptor('file')) // Intercepts the file upload
   async uploadImage(@Param('id') id: string, @UploadedFile() file: any) {
     try {
       const fileName = await this.imageService.uploadImage(file, id);
@@ -24,7 +34,7 @@ export class ImageController {
   async getImage(@Param('fileName') fileName: string, @Res() res: Response) {
     try {
       const imageBuffer = this.imageService.getImage(fileName);
-      res.setHeader('Content-Type', 'image/jpeg');  // Assuming the images are jpeg
+      res.setHeader('Content-Type', 'image/jpeg'); // Assuming the images are jpeg
       res.send(imageBuffer);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);

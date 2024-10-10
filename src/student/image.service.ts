@@ -1,11 +1,12 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'fs';
-import { Multer } from 'multer';
+//import { Multer } from 'multer';
 import { join } from 'path';
 
 @Injectable()
 export class ImageService {
-  private readonly uploadPath = './uploads';  // Path to store images
+  private readonly uploadPath = './uploads';
+  s; // Path to store images
 
   constructor() {
     if (!existsSync(this.uploadPath)) {
