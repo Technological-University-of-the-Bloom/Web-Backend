@@ -1,5 +1,12 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { existsSync, mkdirSync, writeFileSync, readFileSync, readdirSync, unlinkSync } from 'fs';
+import {
+  existsSync,
+  mkdirSync,
+  writeFileSync,
+  readFileSync,
+  readdirSync,
+  unlinkSync,
+} from 'fs';
 import { join } from 'path';
 
 @Injectable()
@@ -53,7 +60,10 @@ export class ImageService {
       return files; // Devuelve una lista de nombres de archivos
     } catch (error) {
       console.error('Error reading files:', error.message);
-      throw new HttpException('Error reading files', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Error reading files',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -72,7 +82,10 @@ export class ImageService {
       console.log('File deleted successfully');
     } catch (error) {
       console.error('Error deleting file:', error.message);
-      throw new HttpException('Error deleting file', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Error deleting file',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

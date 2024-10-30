@@ -1,9 +1,21 @@
 // Importaciones necesarias para el servicio
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common'; // Importa decorators y clases de NestJS
-import { existsSync, mkdirSync, writeFileSync, readFileSync, readdirSync, unlinkSync } from 'fs'; // Módulo 'fs' para el manejo de archivos
+import {
+  //Injectable,
+  HttpException,
+  HttpStatus,
+  Controller,
+} from '@nestjs/common'; // Importa decorators y clases de NestJS
+import {
+  existsSync,
+  mkdirSync,
+  writeFileSync,
+  readFileSync,
+  readdirSync,
+  unlinkSync,
+} from 'fs'; // Módulo 'fs' para el manejo de archivos
 import { join } from 'path'; // Módulo 'path' para manejar rutas de archivos
 
-@Injectable() // Marca la clase como un servicio que puede ser inyectado
+@Controller('images') // Marca la clase como un servicio que puede ser inyectado
 export class ImageController {
   // Ruta donde se almacenarán las imágenes subidas
   private readonly uploadPath = './uploads';
@@ -24,11 +36,11 @@ export class ImageController {
       throw new HttpException('File not provided', HttpStatus.BAD_REQUEST); // Lanza excepción si no hay archivo
     }
     // Genera un nombre de archivo único utilizando el id y la fecha actual
-    const fileName = `${id}-${Date.now()}-${file.originalname}`; 
+    const fileName = `${id}-${Date.now()}-${file.originalname}`;
     const filePath = join(this.uploadPath, fileName); // Crea la ruta completa del archivo
     console.log(`Saving file: ${filePath}`); // Mensaje en consola
     // Escribe el archivo en el sistema de archivos
-    writeFileSync(filePath, file.buffer); 
+    writeFileSync(filePath, file.buffer);
     return fileName; // Devuelve el nombre del archivo guardado
   }
 
@@ -42,7 +54,7 @@ export class ImageController {
       throw new HttpException('File not found', HttpStatus.NOT_FOUND); // Lanza excepción si el archivo no existe
     }
     // Lee y devuelve el contenido del archivo
-    return readFileSync(filePath); 
+    return readFileSync(filePath);
   }
 
   // Método para obtener todos los nombres de archivos de imágenes
@@ -54,7 +66,10 @@ export class ImageController {
       return files; // Devuelve una lista de nombres de archivos
     } catch (error) {
       console.error('Error reading files:', error.message); // Mensaje de error en consola
-      throw new HttpException('Error reading files', HttpStatus.INTERNAL_SERVER_ERROR); // Lanza excepción si hay un error al leer
+      throw new HttpException(
+        'Error reading files',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      ); // Lanza excepción si hay un error al leer
     }
   }
 
@@ -69,11 +84,14 @@ export class ImageController {
     }
     try {
       // Elimina el archivo del sistema
-      unlinkSync(filePath); 
+      unlinkSync(filePath);
       console.log('File deleted successfully'); // Mensaje en consola si se elimina exitosamente
     } catch (error) {
       console.error('Error deleting file:', error.message); // Mensaje de error en consola
-      throw new HttpException('Error deleting file', HttpStatus.INTERNAL_SERVER_ERROR); // Lanza excepción si hay un error al eliminar
+      throw new HttpException(
+        'Error deleting file',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      ); // Lanza excepción si hay un error al eliminar
     }
   }
 }
