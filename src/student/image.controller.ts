@@ -1,10 +1,15 @@
-// Importaciones necesarias para el servicio
 import {
-  //Injectable,
+  Controller,
+  Get,
+  Post,
+  Delete,
+  Param,
+  UploadedFile,
+  UseInterceptors,
   HttpException,
   HttpStatus,
-  Controller,
-} from '@nestjs/common'; // Importa decorators y clases de NestJS
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express'; // Para manejar la subida de archivos
 import {
   existsSync,
   mkdirSync,
@@ -15,83 +20,78 @@ import {
 } from 'fs'; // Módulo 'fs' para el manejo de archivos
 import { join } from 'path'; // Módulo 'path' para manejar rutas de archivos
 
-@Controller('images') // Marca la clase como un servicio que puede ser inyectado
+@Controller('images') // Define un prefijo de ruta para las rutas del controlador
 export class ImageController {
-  // Ruta donde se almacenarán las imágenes subidas
   private readonly uploadPath = './uploads';
 
   constructor() {
-    // Verifica si el directorio de carga existe; si no, lo crea
     if (!existsSync(this.uploadPath)) {
-      console.log('Creating uploads directory'); // Mensaje en consola
-      mkdirSync(this.uploadPath, { recursive: true }); // Crea el directorio recursivamente si no existe
+      console.log('Creating uploads directory');
+      mkdirSync(this.uploadPath, { recursive: true });
     }
   }
 
-  // Método para subir una imagen
-  async uploadImage(file: any, id: string): Promise<string> {
-    // Verifica si se ha proporcionado un archivo
+  @Post('upload/:id')
+  @UseInterceptors(FileInterceptor('file')) // Middleware para manejar archivos subidos
+  async uploadImage(
+    @UploadedFile() file: any,
+    @Param('id') id: string,
+  ): Promise<string> {
     if (!file) {
-      console.error('No file provided'); // Mensaje de error en consola
-      throw new HttpException('File not provided', HttpStatus.BAD_REQUEST); // Lanza excepción si no hay archivo
+      console.error('No file provided');
+      throw new HttpException('File not provided', HttpStatus.BAD_REQUEST);
     }
-    // Genera un nombre de archivo único utilizando el id y la fecha actual
     const fileName = `${id}-${Date.now()}-${file.originalname}`;
-    const filePath = join(this.uploadPath, fileName); // Crea la ruta completa del archivo
-    console.log(`Saving file: ${filePath}`); // Mensaje en consola
-    // Escribe el archivo en el sistema de archivos
+    const filePath = join(this.uploadPath, fileName);
+    console.log(`Saving file: ${filePath}`);
     writeFileSync(filePath, file.buffer);
-    return fileName; // Devuelve el nombre del archivo guardado
+    return fileName;
   }
 
-  // Método para obtener una imagen por su nombre
-  getImage(fileName: string): Buffer {
-    const filePath = join(this.uploadPath, fileName); // Crea la ruta completa del archivo
-    console.log(`Looking for file: ${filePath}`); // Mensaje en consola
-    // Verifica si el archivo existe
+  @Get(':fileName')
+  getImage(@Param('fileName') fileName: string): Buffer {
+    const filePath = join(this.uploadPath, fileName);
+    console.log(`Looking for file: ${filePath}`);
     if (!existsSync(filePath)) {
-      console.error('File not found'); // Mensaje de error en consola
-      throw new HttpException('File not found', HttpStatus.NOT_FOUND); // Lanza excepción si el archivo no existe
+      console.error('File not found');
+      throw new HttpException('File not found', HttpStatus.NOT_FOUND);
     }
-    // Lee y devuelve el contenido del archivo
     return readFileSync(filePath);
   }
 
-  // Método para obtener todos los nombres de archivos de imágenes
+  @Get()
   getAllImages(): string[] {
     try {
-      console.log('Reading files from uploads directory'); // Mensaje en consola
-      const files = readdirSync(this.uploadPath); // Lee los archivos del directorio de carga
-      console.log(`Files found: ${files}`); // Mensaje en consola con los nombres de los archivos encontrados
-      return files; // Devuelve una lista de nombres de archivos
+      console.log('Reading files from uploads directory');
+      const files = readdirSync(this.uploadPath);
+      console.log(`Files found: ${files}`);
+      return files;
     } catch (error) {
-      console.error('Error reading files:', error.message); // Mensaje de error en consola
+      console.error('Error reading files:', error.message);
       throw new HttpException(
         'Error reading files',
         HttpStatus.INTERNAL_SERVER_ERROR,
-      ); // Lanza excepción si hay un error al leer
+      );
     }
   }
 
-  // Método para eliminar una imagen por su nombre
-  async deleteImage(fileName: string): Promise<void> {
-    const filePath = join(this.uploadPath, fileName); // Crea la ruta completa del archivo
-    console.log(`Deleting file: ${filePath}`); // Mensaje en consola
-    // Verifica si el archivo a eliminar existe
+  @Delete(':fileName')
+  async deleteImage(@Param('fileName') fileName: string): Promise<void> {
+    const filePath = join(this.uploadPath, fileName);
+    console.log(`Deleting file: ${filePath}`);
     if (!existsSync(filePath)) {
-      console.error('File to delete not found'); // Mensaje de error en consola
-      throw new HttpException('File not found', HttpStatus.NOT_FOUND); // Lanza excepción si el archivo no existe
+      console.error('File to delete not found');
+      throw new HttpException('File not found', HttpStatus.NOT_FOUND);
     }
     try {
-      // Elimina el archivo del sistema
       unlinkSync(filePath);
-      console.log('File deleted successfully'); // Mensaje en consola si se elimina exitosamente
+      console.log('File deleted successfully');
     } catch (error) {
-      console.error('Error deleting file:', error.message); // Mensaje de error en consola
+      console.error('Error deleting file:', error.message);
       throw new HttpException(
         'Error deleting file',
         HttpStatus.INTERNAL_SERVER_ERROR,
-      ); // Lanza excepción si hay un error al eliminar
+      );
     }
   }
 }
