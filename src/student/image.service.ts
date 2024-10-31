@@ -1,77 +1,58 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { existsSync, mkdirSync, writeFileSync, readFileSync, readdirSync, unlinkSync } from 'fs';
-import { join } from 'path';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';  // Importa decorador y excepciones de NestJS
+import { existsSync, mkdirSync, writeFileSync, readFileSync, readdirSync, unlinkSync } from 'fs';  // Funciones del sistema de archivos
+import { join } from 'path';  // Módulo para manipulación de rutas
 
-@Injectable()
+@Injectable()  // Declara que esta clase es un servicio inyectable en otros componentes
 export class ImageService {
-  // Ruta donde se almacenarán las imágenes subidas
-  private readonly uploadPath = './uploads';
+  private readonly uploadPath = './uploads';  // Directorio donde se guardarán las imágenes
 
   constructor() {
-    // Verifica si el directorio de carga existe; si no, lo crea
+    // Si no existe la carpeta `uploads`, se crea de manera recursiva
     if (!existsSync(this.uploadPath)) {
-      console.log('Creating uploads directory');
       mkdirSync(this.uploadPath, { recursive: true });
     }
   }
 
   // Método para subir una imagen
   async uploadImage(file: any, id: string): Promise<string> {
-    // Verifica si se ha proporcionado un archivo
     if (!file) {
-      console.error('No file provided');
+      // Si no se proporciona un archivo, lanza un error con el código de estado 400 (BAD REQUEST)
       throw new HttpException('File not provided', HttpStatus.BAD_REQUEST);
     }
-    // Genera un nombre de archivo único
+    // Crea un nombre único para el archivo con el formato: id-timestamp-originalname
     const fileName = `${id}-${Date.now()}-${file.originalname}`;
-    const filePath = join(this.uploadPath, fileName);
-    console.log(`Saving file: ${filePath}`);
-    // Escribe el archivo en el sistema de archivos
-    writeFileSync(filePath, file.buffer);
-    return fileName; // Devuelve el nombre del archivo guardado
+    const filePath = join(this.uploadPath, fileName);  // Genera la ruta completa donde se guardará el archivo
+    writeFileSync(filePath, file.buffer);  // Escribe el archivo en el sistema de archivos
+    return fileName;  // Devuelve el nombre del archivo guardado
   }
 
-  // Método para obtener una imagen por su nombre
+  // Método para obtener una imagen por su nombre de archivo
   getImage(fileName: string): Buffer {
-    const filePath = join(this.uploadPath, fileName);
-    console.log(`Looking for file: ${filePath}`);
-    // Verifica si el archivo existe
+    const filePath = join(this.uploadPath, fileName);  // Ruta completa del archivo
     if (!existsSync(filePath)) {
-      console.error('File not found');
+      // Si el archivo no existe, lanza un error con el código de estado 404 (NOT FOUND)
       throw new HttpException('File not found', HttpStatus.NOT_FOUND);
     }
-    // Lee y devuelve el contenido del archivo
-    return readFileSync(filePath);
+    return readFileSync(filePath);  // Lee el archivo y devuelve su contenido como un buffer
   }
 
-  // Método para obtener todos los nombres de archivos de imágenes
+  // Método para listar todos los archivos en el directorio `uploads`
   getAllImages(): string[] {
-    try {
-      console.log('Reading files from uploads directory');
-      const files = readdirSync(this.uploadPath);
-      console.log(`Files found: ${files}`);
-      return files; // Devuelve una lista de nombres de archivos
-    } catch (error) {
-      console.error('Error reading files:', error.message);
-      throw new HttpException('Error reading files', HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    // Lee los nombres de todos los archivos en la carpeta `uploads` y los devuelve como un array
+    return readdirSync(this.uploadPath);
   }
 
-  // Método para eliminar una imagen por su nombre
+  // Método para eliminar una imagen por su nombre de archivo
   async deleteImage(fileName: string): Promise<void> {
-    const filePath = join(this.uploadPath, fileName);
-    console.log(`Deleting file: ${filePath}`);
-    // Verifica si el archivo a eliminar existe
+    const filePath = join(this.uploadPath, fileName);  // Ruta completa del archivo
     if (!existsSync(filePath)) {
-      console.error('File to delete not found');
+      // Si el archivo no existe, lanza un error con el código de estado 404 (NOT FOUND)
       throw new HttpException('File not found', HttpStatus.NOT_FOUND);
     }
     try {
-      // Elimina el archivo del sistema
-      unlinkSync(filePath);
-      console.log('File deleted successfully');
+      unlinkSync(filePath);  // Elimina el archivo
     } catch (error) {
-      console.error('Error deleting file:', error.message);
+      // Si ocurre un error al eliminar, lanza una excepción
       throw new HttpException('Error deleting file', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
