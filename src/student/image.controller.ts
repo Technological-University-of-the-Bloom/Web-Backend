@@ -1,10 +1,9 @@
-import { Controller, Post, Get, Param, UploadedFile, UseInterceptors, Res, HttpException, HttpStatus, Delete } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';  // Importa el interceptor para manejar la subida de archivos
-import { ImageService } from './image.service';  // Importa el servicio donde está la lógica para manejar las imágenes
-import { Response } from 'express';  // Tipo Response de express para manejar respuestas HTTP
+// Importaciones necesarias para el servicio
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common'; // Importa decorators y clases de NestJS
+import { existsSync, mkdirSync, writeFileSync, readFileSync, readdirSync, unlinkSync } from 'fs'; // Módulo 'fs' para el manejo de archivos
+import { join } from 'path'; // Módulo 'path' para manejar rutas de archivos
 
-//localhost:3000/imagenStudent
-@Controller('imagenStudent')  // El controlador responde a rutas que comienzan con '/imagenStudent'
+@Injectable() // Marca la clase como un servicio que puede ser inyectado
 export class ImageController {
   constructor(private readonly imageService: ImageService) {}  // Inyecta el servicio de imágenes a través del constructor
 
