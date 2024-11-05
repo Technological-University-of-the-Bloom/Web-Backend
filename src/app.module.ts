@@ -5,6 +5,7 @@ import { BlogsModule } from './blogs/blogs.module';
 import { NewsModule } from './news/news.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { StudentModule } from './student/student.module';
+import { DocumentsModule } from './documents/documents/documents.module';
 //import { ImageModule } from './image/image.module';
 
 @Module({
@@ -15,6 +16,7 @@ import { StudentModule } from './student/student.module';
     StudentModule,
     //ImageModule,
     StudentModule,
+    DocumentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
