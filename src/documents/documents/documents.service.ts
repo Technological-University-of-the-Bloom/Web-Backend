@@ -7,123 +7,127 @@ import * as textract from 'textract';
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 
-// Interfaz para representar un documento
 interface Document {
   id: string;
   name: string;
   content: string;
   filePath: string;
-  title?: string; // Agregado: Campo opcional para almacenar el título del documento
-  keyContent?: string; // Agregado: Campo opcional para almacenar el contenido clave del documento
+  title?: string;
+  keyContent?: string;
 }
 
 @Injectable()
 export class DocumentsService {
-  private documents: Document[] = []; // Lista de documentos almacenados en memoria
-  private readonly uploadDir = path.join(__dirname, 'uploads'); // Directorio donde se guardarán los archivos
+  private documents: Document[] = [];
+  private readonly uploadDir = path.join(__dirname, 'uploads');
 
   constructor() {
-    // Crear el directorio de almacenamiento si no existe
     if (!fs.existsSync(this.uploadDir)) {
-      fs.mkdirSync(this.uploadDir); 
+      fs.mkdirSync(this.uploadDir); // Crear el directorio de almacenamiento si no existe
     }
   }
 
-  // Guardar el archivo, extraer su contenido y almacenar los metadatos (título y contenido clave)
+  // Guardar el archivo y extraer su contenido
   async saveFile(file: Express.Multer.File, title: string, keyContent: string): Promise<Document> {
-    const id = uuidv4(); // Generar un ID único para el documento
-    const name = file.originalname; // Obtener el nombre original del archivo
-    const filePath = path.join(this.uploadDir, name); // Ruta donde se almacenará el archivo
+    const id = uuidv4();
+    const name = file.originalname;
+    const filePath = path.join(this.uploadDir, name);
 
-    // Guardar el archivo en el sistema de archivos
-    fs.writeFileSync(filePath, file.buffer);
+    fs.writeFileSync(filePath, file.buffer); // Guardar archivo en el servidor
 
-    // Extraer el contenido del archivo (según su tipo)
     const content = await this.extractContent(filePath);
 
-    // Crear el documento con su ID, nombre, contenido, ruta y los metadatos proporcionados
     const newDocument: Document = { id, name, content, filePath, title, keyContent };
-    this.documents.push(newDocument); // Agregar el documento a la lista de documentos
-    return newDocument; // Retornar el documento creado
+    this.documents.push(newDocument);
+    return newDocument;
   }
 
-  // Método para extraer el contenido según el tipo de archivo
+  // Extraer el contenido según el tipo de archivo
   async extractContent(filePath: string): Promise<string> {
-    const ext = path.extname(filePath).toLowerCase(); // Obtener la extensión del archivo
+    const ext = path.extname(filePath).toLowerCase();
     switch (ext) {
       case '.pdf':
-        return this.extractPdfContent(filePath); // Extraer contenido de PDF
+        return this.extractPdfContent(filePath);
       case '.docx':
-        return this.extractDocxContent(filePath); // Extraer contenido de DOCX
+        return this.extractDocxContent(filePath);
       case '.xlsx':
-        return this.extractXlsxContent(filePath); // Extraer contenido de XLSX
+        return this.extractXlsxContent(filePath);
       case '.txt':
-        return this.extractTextContent(filePath); // Extraer contenido de TXT
+        return this.extractTextContent(filePath);
       default:
-        throw new Error('Tipo de archivo no soportado'); // Si el archivo no es de un tipo soportado
+        throw new Error('Tipo de archivo no soportado');
     }
   }
 
-  // Extraer contenido de un archivo PDF
   async extractPdfContent(filePath: string): Promise<string> {
-    const buffer = fs.readFileSync(filePath); // Leer el archivo PDF como buffer
-    const data = await pdf(buffer); // Parsear el contenido del PDF
-    return data.text; // Retornar el texto extraído del PDF
+    const buffer = fs.readFileSync(filePath);
+    const data = await pdf(buffer);
+    return data.text;
   }
 
-  // Extraer contenido de un archivo DOCX
   async extractDocxContent(filePath: string): Promise<string> {
-    const buffer = fs.readFileSync(filePath); // Leer el archivo DOCX como buffer
-    const data = await mammoth.extractRawText({ buffer }); // Extraer el texto crudo del DOCX
-    return data.value; // Retornar el texto extraído
+    const buffer = fs.readFileSync(filePath);
+    const data = await mammoth.extractRawText({ buffer });
+    return data.value;
   }
 
-  // Extraer contenido de un archivo Excel (XLSX)
   async extractXlsxContent(filePath: string): Promise<string> {
-    const workbook = xlsx.readFile(filePath); // Leer el archivo XLSX
-    const sheetName = workbook.SheetNames[0]; // Obtener el primer nombre de la hoja
-    const sheet = workbook.Sheets[sheetName]; // Obtener la hoja de trabajo
-    const content = xlsx.utils.sheet_to_json(sheet, { header: 1 }); // Convertir la hoja a JSON
-    return JSON.stringify(content); // Retornar el contenido como una cadena JSON
+    const workbook = xlsx.readFile(filePath);
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+    const content = xlsx.utils.sheet_to_json(sheet, { header: 1 });
+    return JSON.stringify(content);
   }
 
-  // Extraer contenido de un archivo de texto (TXT)
   async extractTextContent(filePath: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      textract.fromFileWithPath(filePath, (error, text) => { // Usar textract para extraer el texto
-        if (error) reject(error); // Si hay un error, rechazar la promesa
-        resolve(text); // Retornar el texto extraído
+      textract.fromFileWithPath(filePath, (error, text) => {
+        if (error) reject(error);
+        resolve(text);
       });
     });
   }
 
-  // Obtener un documento por su nombre exacto
+  // Obtener un documento por su nombre
   getDocumentByName(name: string): Document | undefined {
-    return this.documents.find(doc => doc.name === name); // Buscar el documento por nombre
+    return this.documents.find(doc => doc.name === name);
   }
 
-  // Obtener todos los documentos almacenados
+  // Obtener un documento por su ID
+  getDocumentById(id: string): Document | undefined {
+    return this.documents.find(doc => doc.id === id); // Buscar por ID
+  }
+
+  // Buscar documentos por palabras clave en título o keyContent
+  searchDocumentsByKeyword(keyword: string): Document[] { // Nuevo método de búsqueda avanzada
+    const lowerKeyword = keyword.toLowerCase();
+    return this.documents.filter(
+      doc =>
+        (doc.title && doc.title.toLowerCase().includes(lowerKeyword)) || // Buscar en título
+        (doc.keyContent && doc.keyContent.toLowerCase().includes(lowerKeyword)) // Buscar en keyContent
+    );
+  }
+
+  // Obtener todos los documentos
   listDocuments(): Document[] {
-    return this.documents; // Retornar todos los documentos
+    return this.documents;
   }
 
-  // Eliminar un documento por su nombre y borrar el archivo físicamente
+  // Eliminar un documento por su nombre
   deleteDocumentByName(name: string): boolean {
-    const index = this.documents.findIndex(doc => doc.name === name); // Buscar el documento
-    if (index === -1) return false; // Si no se encuentra, retornar falso
-    const [deletedDocument] = this.documents.splice(index, 1); // Eliminar el documento de la lista
-    fs.unlinkSync(deletedDocument.filePath); // Eliminar el archivo del sistema
-    return true; // Retornar verdadero si se eliminó correctamente
+    const index = this.documents.findIndex(doc => doc.name === name);
+    if (index === -1) return false;
+    const [deletedDocument] = this.documents.splice(index, 1);
+    fs.unlinkSync(deletedDocument.filePath);
+    return true;
   }
 
-  // Buscar documentos por palabra clave en el título, contenido o contenido clave
-  searchDocuments(keyword: string): Document[] {
-    return this.documents.filter(doc => {
-      return (
-        doc.title?.toLowerCase().includes(keyword.toLowerCase()) || // Buscar en el título
-        doc.content.toLowerCase().includes(keyword.toLowerCase()) || // Buscar en el contenido
-        doc.keyContent?.toLowerCase().includes(keyword.toLowerCase()) // Buscar en el contenido clave
-      );
-    });
+  // Eliminar un documento por ID
+  deleteDocumentById(id: string): boolean {
+    const index = this.documents.findIndex(doc => doc.id === id);
+    if (index === -1) return false;
+    const [deletedDocument] = this.documents.splice(index, 1);
+    fs.unlinkSync(deletedDocument.filePath);
+    return true;
   }
 }
