@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Delete, Param, UploadedFile, UseInterceptors, Body, Query, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Get, Delete, Put, Param, UploadedFile, UseInterceptors, Body, Query, Res, HttpStatus } from '@nestjs/common';
 import { DocumentsService } from './documents.service';
 import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -78,6 +78,44 @@ export class DocumentsController {
     } else {
       res.status(HttpStatus.NOT_FOUND).json({
         message: `No se encontraron documentos con la palabra clave "${keyword}".`,
+      });
+    }
+  }
+  //Get All
+  @Get()
+  listAllDocuments(@Res() res: Response): void {
+    const documents = this.documentsService.listDocuments();
+    res.status(HttpStatus.OK).json(documents);
+  }
+  //GETALL DOCUMENTS
+  @Get()
+getAllDocuments(@Res() res: Response): void {
+  const documents = this.documentsService.listDocuments();
+  if (documents.length > 0) {
+    res.status(HttpStatus.OK).json(documents);
+  } else {
+    res.status(HttpStatus.NOT_FOUND).json({
+      message: 'No se encontraron documentos.',
+    });
+  }
+}
+//Put method
+@Put(':id')
+  async updateDocument(
+    @Param('id') id: string,
+    @Body('title') title: string,
+    @Body('keyContent') keyContent: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      const updatedDocument = await this.documentsService.updateDocument(id, title, keyContent);
+      res.status(HttpStatus.OK).json({
+        message: 'Documento actualizado con éxito.',
+        document: updatedDocument,
+      });
+    } catch (error) {
+      res.status(HttpStatus.NOT_FOUND).json({
+        message: error.message,
       });
     }
   }

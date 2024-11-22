@@ -58,6 +58,18 @@ export class DocumentsService {
         throw new Error('Tipo de archivo no soportado');
     }
   }
+  // si mantiene error solo debo de cambiarlo de lugar
+  async updateDocument(id: string, title?: string, keyContent?: string): Promise<Document> {
+    const document = this.getDocumentById(id);
+    if (!document) {
+      throw new Error(`Documento con ID ${id} no encontrado.`);
+    }
+
+    if (title) document.title = title;
+    if (keyContent) document.keyContent = keyContent;
+
+    return document;
+  }// si mantiene error solo debo de cambiarlo de lugar
 
   async extractPdfContent(filePath: string): Promise<string> {
     const buffer = fs.readFileSync(filePath);
@@ -97,7 +109,10 @@ export class DocumentsService {
   getDocumentById(id: string): Document | undefined {
     return this.documents.find(doc => doc.id === id); // Buscar por ID
   }
-
+//GETALL DOCUMENTS
+listDocuments(): Document[] {
+  return this.documents;
+}
   // Buscar documentos por palabras clave en título o keyContent
   searchDocumentsByKeyword(keyword: string): Document[] { // Nuevo método de búsqueda avanzada
     const lowerKeyword = keyword.toLowerCase();
@@ -108,10 +123,7 @@ export class DocumentsService {
     );
   }
 
-  // Obtener todos los documentos
-  listDocuments(): Document[] {
-    return this.documents;
-  }
+ 
 
   // Eliminar un documento por su nombre
   deleteDocumentByName(name: string): boolean {
